@@ -2,6 +2,7 @@ package com.highschool.football.controller;
 
 import com.highschool.football.dao.*;
 import com.highschool.football.entity.*;
+import com.highschool.football.pojo.AppointInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +25,21 @@ public class AppointController {
     * 查询全部约球订单
     * */
     @GetMapping(value="/find")
-    private List<Appoint> appointList(){
-        return appointRepository.findAll();
+    private List<AppointInfo> appointList(@RequestParam("sessionId") String sessionId){
+
+//        Optional<Session> sessionOptional = sessionRepository.findFirstBySessionIdAndLastDateAfter(sessionId, new Date());
+//        if (sessionOptional.isPresent()){
+//            Session session = sessionOptional.get();
+//            String openId = session.getSessionValue();
+//            Optional<User> userOptional = userRepository.findByOpenId(openId);
+//            if (userOptional.isPresent()){
+//                User user = userOptional.get();
+//                Integer creatorId = user.getId();
+//
+//            }
+//        }
+
+        return appointRepository.findAppointInfo();
     }
 
     /*
