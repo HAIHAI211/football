@@ -60,6 +60,7 @@ public class AppointController {
                 Integer creatorId = user.getId();
                 Appoint appoint = new Appoint();
 
+                appoint.setStatus(0); // 表示人员还未集齐
                 appoint.setCreatorId(creatorId);
                 appoint.setCreateTime(new Date());
                 appoint.setAppointTime(new Date(appointTime));
