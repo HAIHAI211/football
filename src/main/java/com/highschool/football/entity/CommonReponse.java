@@ -8,11 +8,17 @@ public class CommonReponse<T> {
     public static final int NULL_CODE = -1;
     public static final String NULL_MSG = "no data";
 
-//    public static final int FAIL_CODE = -2;
-//    public static final String FAIL_MSG = "fail";
+    public static final int FAIL_CODE = -2;
+    public static final String FAIL_MSG = "fail";
 
     public static final int LOGIN_FAIL_CODE = -3;
     public static final String LOGIN_FAIL_MSG = "登录超时";
+
+    public static final int DUPLICATE_APPOINT_CODE = -4;
+    public static final String DUPLICATE_APPOINT_MSG = "重复加入";
+
+    public static final int ACCOUNT_FILL_CODE = -5;
+    public static final String ACCOUNT_FILL_MSG = "人数已满";
 
     private int code;
     private String msg;
@@ -23,6 +29,7 @@ public class CommonReponse<T> {
         this.msg = msg;
         this.data = data;
     }
+
 //    public CommonReponse(boolean isSuccess, T... data){
 //        if (isSuccess){
 //            this.code = SUCCESS_CODE;
