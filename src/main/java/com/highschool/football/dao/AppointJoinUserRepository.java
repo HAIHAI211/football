@@ -13,4 +13,5 @@ import java.util.Optional;
 public interface AppointJoinUserRepository extends JpaRepository<AppointJoinUser,Integer>{
     Optional<AppointJoinUser> findFirstByAppointIdAndUserId(Integer appointId, Integer userId);
     List<AppointJoinUser> findAllByUserId(Integer userId);
+    List<AppointJoinUser> findAllByAppointId(Integer appointId);
 }

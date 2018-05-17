@@ -3,9 +3,11 @@ package com.highschool.football.controller;
 import com.highschool.football.dao.*;
 import com.highschool.football.entity.*;
 import com.highschool.football.pojo.AppointInfo;
+import com.highschool.football.pojo.CreatedAppointInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +47,41 @@ public class AppointController {
                     }
                 }
                 return appointInfoList;
+            }
+        }
+        return null;
+    }
+
+
+    /*
+     * 查询全部我创建的约球订单
+     * */
+    @GetMapping(value="/findMyCreat")
+    private List<CreatedAppointInfo> myCreatAppointList(@RequestParam("sessionId") String sessionId){
+
+        Optional<Session> sessionOptional = sessionRepository.findFirstBySessionIdAndLastDateAfter(sessionId, new Date());
+        if (sessionOptional.isPresent()){
+            Session session = sessionOptional.get();
+            String openId = session.getSessionValue();
+            Optional<User> userOptional = userRepository.findByOpenId(openId);
+            if (userOptional.isPresent()){
+                User user = userOptional.get();
+                List<Appoint> appoints = appointRepository.findAppointsByCreatorId(user.getId());
+                List<CreatedAppointInfo> result = new ArrayList<>();
+                for (int i = 0; i < appoints.size(); i++) {
+                    Appoint appoint = appoints.get(i);
+                    List<User> users = new ArrayList<>();
+                    List<AppointJoinUser> appointJoinUsers = appointJoinUserRepository.findAllByAppointId(appoint.getId());
+                    for (int j = 0; j < appointJoinUsers.size(); j++) {
+                        AppointJoinUser appointJoinUser = appointJoinUsers.get(j);
+                        Optional<User> optionalUser= userRepository.findById(appointJoinUser.getUserId());
+                        if (optionalUser.isPresent()){
+                            users.add(optionalUser.get());
+                        }
+                    }
+                    result.add(new CreatedAppointInfo(appoint, users));
+                }
+                return result;
             }
         }
         return null;
