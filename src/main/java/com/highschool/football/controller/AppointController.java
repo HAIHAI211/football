@@ -52,6 +52,36 @@ public class AppointController {
         return null;
     }
 
+    /*
+    * 查询全部我加入的约球订单
+    * */
+    @GetMapping(value="/findMyJoin")
+    private List<AppointInfo> myJoinAppointList(@RequestParam("sessionId") String sessionId) {
+        Optional<Session> sessionOptional = sessionRepository.findFirstBySessionIdAndLastDateAfter(sessionId, new Date());
+        if (sessionOptional.isPresent()){
+            Session session = sessionOptional.get();
+            String openId = session.getSessionValue();
+            Optional<User> userOptional = userRepository.findByOpenId(openId);
+            if (userOptional.isPresent()){
+                User user = userOptional.get();
+                 List<AppointInfo> appointInfoList = appointRepository.findAppointInfo1(); // 所有的约球列表
+                List<AppointJoinUser> appointJoinUserList = appointJoinUserRepository.findAllByUserId(user.getId()); // 用户参与的约球项目
+                List <AppointInfo> result = new ArrayList<>();
+                for (int i = 0; i < appointInfoList.size(); i++) {
+                    AppointInfo appointInfo = appointInfoList.get(i);
+                    for (int j = 0; j < appointJoinUserList.size(); j++) {
+                        AppointJoinUser appointJoinUser = appointJoinUserList.get(j);
+                        if (appointInfo.getAppoint().getId() == appointJoinUser.getAppointId()) {
+                            result.add(appointInfo);
+                        }
+                    }
+                }
+                return result;
+            }
+        }
+        return null;
+    }
+
 
     /*
      * 查询全部我创建的约球订单
@@ -115,6 +145,25 @@ public class AppointController {
                 appoint.setSiteId(siteId);
                 appointRepository.save(appoint);
 
+            }
+        }
+    }
+
+    /*
+    * 取消约球订单
+    * */
+    @PostMapping(value = "/cancel")
+    private void cancelAppoint(@RequestParam("sessionId") String sessionId, @RequestParam("appointId") Integer appointId) {
+
+        Optional<Session> sessionOptional = sessionRepository.findFirstBySessionIdAndLastDateAfter(sessionId, new Date());
+        if (sessionOptional.isPresent()){
+            Session session = sessionOptional.get();
+            String openId = session.getSessionValue();
+            Optional<User> userOptional = userRepository.findByOpenId(openId);
+            if (userOptional.isPresent()){
+                Appoint appoint = appointRepository.getOne(appointId);
+                appoint.setStatus(3); // 取消该订单
+                appointRepository.save(appoint);
             }
         }
     }
