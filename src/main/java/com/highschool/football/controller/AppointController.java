@@ -220,7 +220,7 @@ public class AppointController {
      * 退出约球订单
      * */
     @PostMapping(value = "/leave")
-    private CommonReponse leaveAppoint(@RequestParam("sessionId") String sessionId, @RequestParam("appointId") Integer appointId) {
+    private void leaveAppoint(@RequestParam("sessionId") String sessionId, @RequestParam("appointId") Integer appointId) {
 
         Optional<Session> sessionOptional = sessionRepository.findFirstBySessionIdAndLastDateAfter(sessionId, new Date());
         if (sessionOptional.isPresent()){
@@ -234,30 +234,13 @@ public class AppointController {
                     Appoint appoint = appointOptional.get();
                     //检查是否已经参与过该约球
                     Optional<AppointJoinUser> appointJoinUserOptional = appointJoinUserRepository.findFirstByAppointIdAndUserId(appoint.getId(), user.getId());
-                    if (appointJoinUserOptional.isPresent()) { // 重复加入
-                        return new CommonReponse(CommonReponse.DUPLICATE_APPOINT_CODE, CommonReponse.DUPLICATE_APPOINT_MSG, null);
-                    } else {
-                        if (appoint.getHasCount() + 1 > appoint.getAllCount()) {
-                            return new CommonReponse(CommonReponse.ACCOUNT_FILL_CODE, CommonReponse.ACCOUNT_FILL_MSG, null);
-                        } else {
-                            AppointJoinUser appointJoinUser = new AppointJoinUser();
-                            appointJoinUser.setAppointId(appointId);
-                            appointJoinUser.setUserId(user.getId());
-                            appointJoinUserRepository.save(appointJoinUser);
-                            appoint.setHasCount(appoint.getHasCount() + 1);
-                            appointRepository.save(appoint);
-                            return new CommonReponse(CommonReponse.SUCCESS_CODE, CommonReponse.SUCCESS_MSG, null);
-                        }
+                    if (appointJoinUserOptional.isPresent()) { // 已经加入了
+                        appoint.setHasCount(appoint.getHasCount() - 1);
+                        appointRepository.save(appoint); // 修改已经加入的人数
+                        appointJoinUserRepository.delete(appointJoinUserOptional.get()); // 退出
                     }
-
-                } else {
-                    return new CommonReponse(CommonReponse.FAIL_CODE, CommonReponse.FAIL_MSG, null);
                 }
-            } else {
-                return new CommonReponse(CommonReponse.LOGIN_FAIL_CODE, CommonReponse.LOGIN_FAIL_MSG, null);
             }
-        } else {
-            return new CommonReponse(CommonReponse.LOGIN_FAIL_CODE, CommonReponse.LOGIN_FAIL_MSG, null);
         }
     }
 
