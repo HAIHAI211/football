@@ -7,8 +7,7 @@ public class AppointInfo {
     private User creator;
     private Appoint appoint;
 
-    //用户是否登录
-    private Boolean hasJoin;
+    // private Boolean hasJoin;
 
     public AppointInfo(Appoint appoint, User user) {
         this.appoint = appoint;
@@ -34,11 +33,11 @@ public class AppointInfo {
         this.appoint = appoint;
     }
 
-    public Boolean getHasJoin() {
-        return hasJoin;
-    }
-
-    public void setHasJoin(Boolean hasJoin) {
-        this.hasJoin = hasJoin;
-    }
+//    public Boolean getHasJoin() {
+//        return hasJoin;
+//    }
+//
+//    public void setHasJoin(Boolean hasJoin) {
+//        this.hasJoin = hasJoin;
+//    }
 }
