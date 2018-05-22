@@ -71,7 +71,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>hsfthree</finalName>
+		<finalName>hsf7</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
