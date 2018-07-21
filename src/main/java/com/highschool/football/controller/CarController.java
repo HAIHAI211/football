@@ -1,6 +1,8 @@
 package com.highschool.football.controller;
 
+import com.highschool.football.api.API;
 import com.highschool.football.dao.SiteRepository;
+import com.highschool.football.entity.CarInfo;
 import com.highschool.football.entity.Site;
 import com.sun.deploy.net.HttpResponse;
 import com.sun.deploy.net.HttpUtils;
@@ -30,9 +32,26 @@ public class CarController {
     * 从客户端获取图片并转成base64
     * */
 
-
     @RequestMapping(value = "/pic", method = RequestMethod.POST)
     public String wx_upload(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return getBase64(request);
+    }
+
+    @RequestMapping(value = "/car", method = RequestMethod.POST)
+    public List<CarInfo> wx_upload_car(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String base64 = getBase64(request);
+        MultipartHttpServletRequest params=((MultipartHttpServletRequest) request);
+        String token = params.getParameter("token");
+        List<CarInfo> carInfoList = API.getCarInfo(base64, token);
+        System.out.println(carInfoList);
+        return carInfoList;
+    }
+
+
+
+
+
+    private String getBase64 (HttpServletRequest request) throws Exception{
         request.setCharacterEncoding("utf-8");  //设置编码
         MultipartHttpServletRequest req =(MultipartHttpServletRequest)request;
         MultipartFile mFiles =  req.getFile("file");

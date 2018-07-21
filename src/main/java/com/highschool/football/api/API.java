@@ -1,11 +1,16 @@
 package com.highschool.football.api;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPObject;
 import com.fasterxml.jackson.core.JsonParser;
+import com.highschool.football.entity.CarInfo;
 import com.highschool.football.utils.OKHttpUtil;
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class API {
@@ -33,6 +38,21 @@ public class API {
         map.put("expires_in", expires_in);
         return map;
     }
+
+    public static List<CarInfo> getCarInfo(String base64, String token) {
+        String url = "https://aip.baidubce.com/rest/2.0/image-classify/v1/car?access_token=" + token;
+        RequestBody formBody = new FormBody.Builder().add("image", base64)
+                .add("top_num", "3")
+                .build();
+
+        String result = OKHttpUtil.httpPost(url, formBody);
+        JSONObject jsonpObject = JSONObject.parseObject(result);
+        JSONArray arr = jsonpObject.getJSONArray("result");
+        List<CarInfo> carInfoList = arr.toJavaList(CarInfo.class);
+        return carInfoList;
+    }
+
+
 
 
 

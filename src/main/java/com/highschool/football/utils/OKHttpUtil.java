@@ -30,14 +30,16 @@ public class OKHttpUtil {
      * 发送httppost请求
      *
      * @param url
-     * @param data  提交的参数为key=value&key1=value1的形式
      * @return
      */
-    public static String httpPost(String url, String data) {
+    public static String httpPost(String url, RequestBody formBody) {
         String result = null;
         OkHttpClient httpClient = new OkHttpClient();
-        RequestBody requestBody = RequestBody.create(MediaType.parse("text/html;charset=utf-8"), data);
-        Request request = new Request.Builder().url(url).post(requestBody).build();
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("content-type", "application/x-www-form-urlencoded")
+                .post(formBody)
+                .build();
         try {
             Response response = httpClient.newCall(request).execute();
             result = response.body().string();
